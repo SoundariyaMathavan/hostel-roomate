@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications - Dorm Stay{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">Notifications</h2>
+                </div>
+                <div class="card-body">
+                    {% if notifications %}
+                        <div class="notification-list">
+                            {% for notification in notifications %}
+                                <div class="notification-item p-3 {% if not notification.is_read %}unread{% endif %}">
+                                    <div class="d-flex justify-content-between align-items-center notification-flex">
+                                        <div class="notification-content">
+                                            <p class="mb-1">{{ notification.message }}</p>
+                                            <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
+                                        </div>
+                                        {% if notification.booking %}
+                                            {% if user.is_staff %}
+                                                <a href="{% url 'admin_booking_details' notification.booking.id %}" class="btn btn-sm btn-primary">View Booking</a>
+                                            {% else %}
+                                                <a href="{% url 'booking_details' notification.booking.id %}" class="btn btn-sm btn-primary">View Booking</a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if not forloop.last %}
+                                    <hr class="my-0">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-bell fa-3x text-muted mb-3"></i>
+                            <p class="lead">No notifications yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.notification-item {
+    transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-item.unread {
+    background-color: #e3f2fd;
+}
+
+.notification-item.unread:hover {
+    background-color: #d4e9fc;
+}
+
+.notification-content {
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.notification-content p {
+    margin-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .notification-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .notification-content {
+        margin-right: 0;
+        margin-bottom: 0.75rem;
+        width: 100%;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .notification-content p {
+        font-size: 0.9rem;
+    }
+
+    .notification-content small {
+        font-size: 0.75rem;
+    }
+}
+</style>
+{% endblock %} 

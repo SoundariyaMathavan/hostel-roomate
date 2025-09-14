@@ -1,0 +1,769 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - Dorm Stay{% endblock %}
+
+{% block extra_styles %}
+<style>
+/* Professional Profile Page Styles */
+:root {
+    --card-border-radius: 8px;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --card-bg: #ffffff;
+    --border-color: #e9ecef;
+    --light-bg: #f8f9fa;
+    --form-border: #dee2e6;
+    --form-focus: #80bdff;
+    --form-focus-shadow: rgba(0, 123, 255, 0.25);
+    --section-gap: 1.5rem;
+    --badge-bg: #e9ecef;
+    --badge-text: #495057;
+    --success-color: #28a745;
+    --warning-color: #fd7e14;
+    --danger-color: #dc3545;
+}
+
+/* Layout */
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+.page-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.page-header p {
+    font-size: 1rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Profile Layout */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--section-gap);
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Card Styles */
+.profile-card {
+    background: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--section-gap);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--accent-color);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.profile-card:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.card-header {
+    padding: 1.25rem 1.5rem;
+    background-color: var(--light-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-header h2 {
+    font-size: 1.25rem;
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Profile Sidebar */
+.profile-sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    background-color: var(--light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: var(--primary-color);
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-avatar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(241, 196, 15, 0.1) 0%, rgba(255, 255, 255, 0) 60%);
+    z-index: 0;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.profile-info {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.profile-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #212529;
+}
+
+.profile-email {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.profile-status {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: rgba(40, 167, 69, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.profile-meta {
+    margin-top: 1rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.meta-item:last-child {
+    border-bottom: none;
+}
+
+.meta-item i {
+    width: 20px;
+    margin-right: 0.75rem;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.form-group select,
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--form-border);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: #495057;
+    background-color: #fff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--form-focus);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem var(--form-focus-shadow);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.form-footer {
+    padding: 1.25rem 1.5rem;
+    background-color: var(--light-bg);
+    border-top: 1px solid var(--border-color);
+    text-align: right;
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    line-height: 1;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #e2e6ea;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Preferences Section */
+.preferences-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.preference-item {
+    background-color: var(--light-bg);
+    border-radius: var(--card-border-radius);
+    padding: 1.25rem;
+    border-left: 3px solid var(--accent-color);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.preference-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+.preference-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 20px 20px 0;
+    border-color: transparent var(--accent-color) transparent transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.preference-item:hover::after {
+    opacity: 1;
+}
+
+.preference-item strong {
+    display: block;
+    font-size: 0.85rem;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+.preference-item span {
+    font-size: 0.95rem;
+    color: #212529;
+}
+
+/* Interests Section */
+.interests-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.interest-tag {
+    padding: 0.35rem 0.85rem;
+    background-color: var(--badge-bg);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--badge-text);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.interest-tag:hover {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .page-header {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-container {
+        padding: 1rem;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .page-header p {
+        font-size: 0.9rem;
+    }
+
+    .card-header,
+    .card-body,
+    .form-footer {
+        padding: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .preferences-list {
+        grid-template-columns: 1fr;
+    }
+}
+.chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999; /* High enough to stay above other content */
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+
+.chatbot-box {
+    position: fixed;
+    bottom: 90px;
+    right: 25px;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.chatbot-header {
+    background-color: #00274d;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none; /* or block when active */
+    overflow: hidden;
+}
+
+
+.chatbot-body {
+    padding: 10px;
+    height: 250px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    font-size: 14px;
+}
+
+.chatbot-body p {
+    margin: 8px 0;
+}
+
+.bot-message {
+    background: #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.user-message {
+    background: #cfe2ff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-end;
+}
+
+.chatbot-footer {
+    padding: 10px;
+    display: flex;
+    gap: 5px;
+    border-top: 1px solid #ccc;
+}
+
+.chatbot-footer input {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.chatbot-footer button {
+    background-color: #00274d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>My Profile</h1>
+    <p>Manage your personal information and preferences</p>
+</div>
+
+<div class="profile-container">
+    <div class="profile-grid">
+        <!-- Profile Sidebar -->
+        <div class="profile-sidebar">
+            <div class="profile-card">
+                <div class="card-body">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h2 class="profile-name">{{ user.get_full_name }}</h2>
+                        <div class="profile-email">{{ user.email }}</div>
+                        <div class="profile-status">Active Student</div>
+                    </div>
+                    <div class="profile-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Joined {{ user.date_joined|date:"F Y" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-phone"></i>
+                            <span>{{ profile.phone_number|default:"Not provided" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>{{ profile.student_id|default:"Not provided" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Roommate Preferences -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <h2>Roommate Preferences</h2>
+                </div>
+                <div class="card-body">
+                    <div class="preferences-list">
+                        <div class="preference-item">
+                            <strong>Study Habits</strong>
+                            <span>{{ profile.get_study_habits_display|default:"Not set" }}</span>
+                        </div>
+                        <div class="preference-item">
+                            <strong>Cleanliness</strong>
+                            <span>{{ profile.get_cleanliness_display|default:"Not set" }}</span>
+                        </div>
+                        <div class="preference-item">
+                            <strong>Room Preference</strong>
+                            <span>{{ profile.get_room_preference_display|default:"Not set" }}</span>
+                        </div>
+                        <div class="preference-item">
+                            <strong>Sharing Style</strong>
+                            <span>{{ profile.get_sharing_preference_display|default:"Not set" }}</span>
+                        </div>
+                    </div>
+
+                    {% if profile.interests %}
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Interests</label>
+                        <div class="interests-list">
+                            {% for interest in profile.interests.split %}
+                            <span class="interest-tag">{{ interest }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div style="margin-top: 1rem;">
+                        <a href="{% url 'roommate_finder' %}" class="btn btn-primary">Find Roommates</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Main Content -->
+        <div class="profile-main">
+            <!-- Personal Information -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <h2>Personal Information</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'profile' %}">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first_name">First Name</label>
+                                <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_number">Phone Number</label>
+                                <input type="tel" id="phone_number" name="phone_number" value="{{ profile.phone_number|default:'' }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student_id">Student ID</label>
+                            <input type="text" id="student_id" name="student_id" value="{{ profile.student_id|default:'' }}">
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="submit" name="personal_info" class="btn btn-primary">Save Changes</button>
+                            <a href="{% url 'change_password' %}" class="btn btn-secondary">Change Password</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Roommate Preferences Form -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <h2>Roommate Preferences</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'profile' %}">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="study_habits">Study Habits</label>
+                                <select name="study_habits" id="study_habits">
+                                    <option value="">Select your study habits</option>
+                                    <option value="early_bird" {% if profile.study_habits == 'early_bird' %}selected{% endif %}>Early Bird</option>
+                                    <option value="night_owl" {% if profile.study_habits == 'night_owl' %}selected{% endif %}>Night Owl</option>
+                                    <option value="balanced" {% if profile.study_habits == 'balanced' %}selected{% endif %}>Balanced</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cleanliness">Cleanliness Level</label>
+                                <select name="cleanliness" id="cleanliness">
+                                    <option value="">Select cleanliness level</option>
+                                    <option value="very_neat" {% if profile.cleanliness == 'very_neat' %}selected{% endif %}>Very Neat</option>
+                                    <option value="moderately_neat" {% if profile.cleanliness == 'moderately_neat' %}selected{% endif %}>Moderately Neat</option>
+                                    <option value="relaxed" {% if profile.cleanliness == 'relaxed' %}selected{% endif %}>Relaxed</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="room_preference">Room Preference</label>
+                                <select name="room_preference" id="room_preference">
+                                    <option value="">Select room preference</option>
+                                    <option value="quiet" {% if profile.room_preference == 'quiet' %}selected{% endif %}>Quiet Room</option>
+                                    <option value="social" {% if profile.room_preference == 'social' %}selected{% endif %}>Social Room</option>
+                                    <option value="balanced" {% if profile.room_preference == 'balanced' %}selected{% endif %}>Balanced</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sharing_preference">Sharing Preference</label>
+                                <select name="sharing_preference" id="sharing_preference">
+                                    <option value="">Select sharing preference</option>
+                                    <option value="social" {% if profile.sharing_preference == 'social' %}selected{% endif %}>Very Social</option>
+                                    <option value="moderate" {% if profile.sharing_preference == 'moderate' %}selected{% endif %}>Moderately Social</option>
+                                    <option value="private" {% if profile.sharing_preference == 'private' %}selected{% endif %}>Private Person</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="interests">Interests (comma-separated)</label>
+                            <input type="text" name="interests" id="interests" placeholder="e.g., reading, sports, music, gaming" value="{{ profile.interests|default:'' }}">
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="submit" name="roommate_preferences" class="btn btn-primary">Save Preferences</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Change Password -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <h2>Change Password</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'profile' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" id="current_password" name="current_password" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="new_password">New Password</label>
+                                <input type="password" id="new_password" name="new_password" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm New Password</label>
+                                <input type="password" id="confirm_password" name="confirm_password" required>
+                            </div>
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="submit" name="change_password" class="btn btn-primary">Update Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

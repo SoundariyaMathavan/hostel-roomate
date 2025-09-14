@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Booking Details - Dorm Stay{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .booking-details-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .booking-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .booking-id {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .booking-status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+    }
+    
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-confirmed {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-cancelled {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .detail-section {
+        margin-bottom: 2rem;
+    }
+    
+    .detail-section h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #eee;
+        color: var(--primary-color);
+    }
+    
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .detail-item {
+        margin-bottom: 1rem;
+    }
+    
+    .detail-item label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: #495057;
+    }
+    
+    .detail-item p {
+        margin: 0;
+    }
+    
+    .action-buttons {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .booking-details-container {
+            margin: 1rem auto;
+            padding: 1.5rem;
+        }
+        
+        .booking-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }.chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999; /* High enough to stay above other content */
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+
+.chatbot-box {
+    position: fixed;
+    bottom: 90px;
+    right: 25px;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.chatbot-header {
+    background-color: #00274d;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none; /* or block when active */
+    overflow: hidden;
+}
+
+
+.chatbot-body {
+    padding: 10px;
+    height: 250px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    font-size: 14px;
+}
+
+.chatbot-body p {
+    margin: 8px 0;
+}
+
+.bot-message {
+    background: #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.user-message {
+    background: #cfe2ff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-end;
+}
+
+.chatbot-footer {
+    padding: 10px;
+    display: flex;
+    gap: 5px;
+    border-top: 1px solid #ccc;
+}
+
+.chatbot-footer input {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.chatbot-footer button {
+    background-color: #00274d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="booking-details-container">
+    <div class="booking-header">
+        <div>
+            <h1>Booking Details</h1>
+            <div class="booking-id">Booking #{{ booking.id }}</div>
+        </div>
+        <div class="booking-status status-{{ booking.status }}">
+            {{ booking.status|title }}
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h2>Guest Information</h2>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Guest Name</label>
+                <p>{{ booking.guest_name }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Email</label>
+                <p>{{ booking.email }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Phone</label>
+                <p>{{ booking.phone_number }}</p>
+            </div>
+            <div class="detail-item">
+                <label>PNR</label>
+                <p>{{ booking.pnr|default:"-" }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h2>Room Information</h2>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Room Number</label>
+                <p>{{ booking.room.room_number }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Room Type</label>
+                <p>{{ booking.room.get_room_type_display }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Floor</label>
+                <p>{{ booking.room.floor }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Capacity</label>
+                <p>{{ booking.room.capacity }} person(s)</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h2>Booking Information</h2>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Check-in Date</label>
+                <p>{{ booking.check_in_date|date:"F d, Y" }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Check-out Date</label>
+                <p>{{ booking.check_out_date|date:"F d, Y" }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Duration</label>
+                <p>{{ booking.check_out_date|timeuntil:booking.check_in_date }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Booking Date</label>
+                <p>{{ booking.booking_date|date:"F d, Y" }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h2>Payment Information</h2>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Total Amount</label>
+                <p>${{ booking.total_amount }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Payment Status</label>
+                <p>{% if booking.is_paid %}Paid{% else %}Pending{% endif %}</p>
+            </div>
+            {% if booking.payment_set.exists %}
+            <div class="detail-item">
+                <label>Payment Method</label>
+                <p>{{ booking.payment_set.first.payment_method }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Payment Date</label>
+                <p>{{ booking.payment_set.first.timestamp|date:"F d, Y" }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        {% if booking.status == 'confirmed' %}
+        <a href="{% url 'cancel_booking' booking.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel Booking</a>
+        {% endif %}
+        {% if booking.is_paid %}
+        <a href="{% url 'download_receipt' booking.id %}" class="btn btn-primary">Download Receipt</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

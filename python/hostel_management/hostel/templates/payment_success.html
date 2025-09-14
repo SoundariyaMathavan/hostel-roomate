@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Successful - Dorm Stay{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .success-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .success-icon {
+        font-size: 5rem;
+        color: #2ecc71;
+        margin-bottom: 1.5rem;
+    }
+    
+    .success-title {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+    
+    .success-message {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+    
+    .action-buttons {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    @media (max-width: 768px) {
+        .success-container {
+            margin: 1.5rem auto;
+            padding: 1.5rem;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+        }
+        
+        .success-title {
+            font-size: 1.5rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    
+    <h1 class="success-title">Payment Successful!</h1>
+    
+    <p class="success-message">
+        Your payment has been processed successfully. Your booking is now confirmed.
+        <br>
+        A confirmation email has been sent to your registered email address.
+    </p>
+    
+    <div class="booking-details">
+        <p>You can view your booking details in your dashboard.</p>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">
+            <i class="fas fa-home me-2"></i> Go to Dashboard
+        </a>
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-search me-2"></i> Browse More Rooms
+        </a>
+    </div>
+</div>
+{% endblock %}

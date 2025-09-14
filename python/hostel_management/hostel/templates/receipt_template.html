@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Payment Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .receipt {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #00274d;
+            padding-bottom: 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00274d;
+            margin-bottom: 5px;
+        }
+        .receipt-title {
+            font-size: 18px;
+            color: #666;
+        }
+        .receipt-number {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .info-section {
+            margin-bottom: 20px;
+        }
+        .info-section h2 {
+            font-size: 16px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            color: #00274d;
+        }
+        .info-row {
+            display: flex;
+            margin-bottom: 5px;
+        }
+        .info-label {
+            width: 150px;
+            font-weight: bold;
+        }
+        .info-value {
+            flex: 1;
+        }
+        .payment-details {
+            margin-top: 30px;
+            border: 1px solid #eee;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        .total-row {
+            margin-top: 10px;
+            font-weight: bold;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        .thank-you {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 16px;
+            color: #00274d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <div class="header">
+            <div class="logo">Dorm Stay</div>
+            <div class="receipt-title">Payment Receipt</div>
+            <div class="receipt-number">Receipt #: {{ receipt_number }}</div>
+            <div class="receipt-date">Date: {{ date }}</div>
+        </div>
+        
+        <div class="info-section">
+            <h2>Customer Information</h2>
+            <div class="info-row">
+                <div class="info-label">Name:</div>
+                <div class="info-value">{{ user.get_full_name|default:user.username }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Email:</div>
+                <div class="info-value">{{ user.email }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Guest Name:</div>
+                <div class="info-value">{{ booking.guest_name }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Phone:</div>
+                <div class="info-value">{{ booking.phone_number }}</div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>Booking Details</h2>
+            <div class="info-row">
+                <div class="info-label">Booking ID:</div>
+                <div class="info-value">{{ booking.id }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Room:</div>
+                <div class="info-value">{{ booking.room.room_number }} ({{ booking.room.get_room_type_display }})</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Check-in Date:</div>
+                <div class="info-value">{{ booking.check_in_date }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Check-out Date:</div>
+                <div class="info-value">{{ booking.check_out_date }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Duration:</div>
+                <div class="info-value">{{ booking.check_out_date|timeuntil:booking.check_in_date }}</div>
+            </div>
+        </div>
+        
+        <div class="payment-details">
+            <h2>Payment Details</h2>
+            <div class="info-row">
+                <div class="info-label">Payment Method:</div>
+                <div class="info-value">{{ payment.payment_method }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Payment Date:</div>
+                <div class="info-value">{{ payment.timestamp|date:"F d, Y" }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Payment Status:</div>
+                <div class="info-value">{{ payment.status }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Room Rate:</div>
+                <div class="info-value">${{ booking.room.price }} per night</div>
+            </div>
+            <div class="info-row total-row">
+                <div class="info-label">Total Amount:</div>
+                <div class="info-value">${{ booking.total_amount }}</div>
+            </div>
+        </div>
+        
+        <div class="thank-you">
+            Thank you for choosing Dorm Stay!
+        </div>
+        
+        <div class="footer">
+            <p>This is an electronically generated receipt and does not require a signature.</p>
+            <p>For any queries, please contact support@dormstay.com or call +1 (234) 567-8900</p>
+            <p>&copy; 2025 Dorm Stay. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

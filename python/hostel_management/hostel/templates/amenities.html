@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block title %}Amenities & Features - Dorm Stay{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h1 class="display-4 fw-bold">Our Amenities & Features</h1>
+            <p class="lead text-muted">Experience comfort and convenience with our premium hostel amenities</p>
+        </div>
+    </div>
+
+    <!-- Main Amenities Section -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Hostel Common Area" class="img-fluid rounded shadow-lg">
+        </div>
+        <div class="col-md-6 d-flex flex-column justify-content-center">
+            <h2 class="mb-4">Premium Accommodations</h2>
+            <p class="lead">Our hostel offers a variety of room types to suit your needs and budget, from shared dormitories to private suites.</p>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Comfortable beds</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Clean linens</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Individual lockers</li>
+                    </ul>
+                </div>
+                <div class="col-6">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Reading lights</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Privacy curtains</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Climate control</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Amenities Cards -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2>Hostel Features</h2>
+            <p class="text-muted">Everything you need for a comfortable stay</p>
+        </div>
+
+        <!-- Card 1 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-wifi fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h5">High-Speed WiFi</h3>
+                    <p class="card-text">Stay connected with our complimentary high-speed internet access throughout the property.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-utensils fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h5">Dining Options</h3>
+                    <p class="card-text">Enjoy our communal kitchen facilities or opt for our meal plans with vegetarian and non-vegetarian options.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-couch fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h5">Common Areas</h3>
+                    <p class="card-text">Relax in our comfortable common areas with TV, games, and plenty of space to socialize or study.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-tshirt fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h5">Laundry Services</h3>
+                    <p class="card-text">On-site laundry facilities available 24/7 with optional laundry service for your convenience.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h5">24/7 Security</h3>
+                    <p class="card-text">Feel safe with our 24-hour security, CCTV monitoring, and secure access to all areas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-parking fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h5">Parking Options</h3>
+                    <p class="card-text">Secure parking available for both cars and two-wheelers at affordable rates.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Services Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2>Additional Services</h2>
+            <p class="text-muted">Customize your stay with our optional services</p>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 bg-light border-0">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Room Services</h3>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-broom text-primary me-2"></i> Daily Cleaning</span>
+                            <span class="badge bg-primary rounded-pill">Available</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-snowflake text-primary me-2"></i> Air Conditioning</span>
+                            <span class="badge bg-primary rounded-pill">Available</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-bed text-primary me-2"></i> Linen Change</span>
+                            <span class="badge bg-primary rounded-pill">Weekly</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-concierge-bell text-primary me-2"></i> Room Service</span>
+                            <span class="badge bg-primary rounded-pill">Available</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 bg-light border-0">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Meal Plans</h3>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-coffee text-primary me-2"></i> Breakfast Only</span>
+                            <span class="badge bg-primary rounded-pill">Available</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-utensils text-primary me-2"></i> Breakfast & Dinner</span>
+                            <span class="badge bg-primary rounded-pill">Available</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-hamburger text-primary me-2"></i> All Meals</span>
+                            <span class="badge bg-primary rounded-pill">Available</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-leaf text-primary me-2"></i> Vegetarian Options</span>
+                            <span class="badge bg-primary rounded-pill">Available</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Study & Work Facilities -->
+    <div class="row mb-5">
+        <div class="col-md-6 order-md-2">
+            <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Study Area" class="img-fluid rounded shadow-lg">
+        </div>
+        <div class="col-md-6 order-md-1 d-flex flex-column justify-content-center">
+            <h2 class="mb-4">Study & Work Facilities</h2>
+            <p>We understand the importance of a good study environment. Our hostel provides dedicated spaces for academic and professional work.</p>
+            <ul class="list-unstyled mt-3">
+                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Quiet study rooms</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Group study areas</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> High-speed internet</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Printing services</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Computer stations</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="card bg-primary text-white p-5 rounded-lg">
+                <div class="card-body">
+                    <h2 class="mb-4">Ready to Experience Our Hostel?</h2>
+                    <p class="lead mb-4">Book your stay now and enjoy all these amenities and more!</p>
+                    <a href="{% url 'available_rooms' %}" class="btn btn-light btn-lg px-4">View Available Rooms</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+.feature-icon {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
+{% endblock %}

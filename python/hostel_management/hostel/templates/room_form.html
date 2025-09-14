@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if room %}Edit Room{% else %}Add New Room{% endif %} - Dorm Stay{% endblock %}
+
+{% block extra_styles %}
+.form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: auto;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--light-color);
+}
+
+.btn-submit {
+    background: var(--accent-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #2980b9;
+}
+
+.btn-cancel {
+    background: transparent;
+    color: var(--text-muted);
+    padding: 0.75rem 1.5rem;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-cancel:hover {
+    background-color: var(--light-color);
+    color: var(--text-color);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{% if room %}Edit Room{% else %}Add New Room{% endif %}</h1>
+    <p>{% if room %}Update room details{% else %}Create a new room{% endif %}</p>
+</div>
+
+<div class="form-container">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="room_number">Room Number</label>
+                <input type="text" id="room_number" name="room_number" value="{{ room.room_number }}" required>
+            </div>
+            <div class="form-group">
+                <label for="room_type">Room Type</label>
+                <select id="room_type" name="room_type" required>
+                    <option value="">Select room type</option>
+                    <option value="single" {% if room.room_type == 'single' %}selected{% endif %}>Single Room</option>
+                    <option value="double" {% if room.room_type == 'double' %}selected{% endif %}>Double Room</option>
+                    <option value="deluxe" {% if room.room_type == 'deluxe' %}selected{% endif %}>Deluxe Room</option>
+                    <option value="suite" {% if room.room_type == 'suite' %}selected{% endif %}>Suite</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="floor">Floor</label>
+                <input type="number" id="floor" name="floor" value="{{ room.floor }}" required>
+            </div>
+            <div class="form-group">
+                <label for="capacity">Capacity</label>
+                <input type="number" id="capacity" name="capacity" value="{{ room.capacity }}" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price per Month ($)</label>
+                <input type="number" id="price" name="price" value="{{ room.price }}" step="0.01" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="4">{{ room.description }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Amenities</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="has_ac" name="has_ac" {% if room.has_ac %}checked{% endif %}>
+                    <label for="has_ac">Air Conditioning</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="has_wifi" name="has_wifi" {% if room.has_wifi %}checked{% endif %}>
+                    <label for="has_wifi">WiFi</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="has_tv" name="has_tv" {% if room.has_tv %}checked{% endif %}>
+                    <label for="has_tv">Television</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="has_fridge" name="has_fridge" {% if room.has_fridge %}checked{% endif %}>
+                    <label for="has_fridge">Refrigerator</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="has_balcony" name="has_balcony" {% if room.has_balcony %}checked{% endif %}>
+                    <label for="has_balcony">Balcony</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="has_attached_bathroom" name="has_attached_bathroom" {% if room.has_attached_bathroom %}checked{% endif %}>
+                    <label for="has_attached_bathroom">Attached Bathroom</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="room_image">Room Image</label>
+            <input type="file" id="room_image" name="room_image" accept="image/*">
+            {% if room.image %}
+            <p class="help-text">Current image: {{ room.image.name }}</p>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'admin_dashboard' %}" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-submit">{% if room %}Update Room{% else %}Add Room{% endif %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %} 

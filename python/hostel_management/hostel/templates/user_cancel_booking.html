@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}Cancel Your Booking - Dorm Stay{% endblock %}
+
+{% block content %}
+<div class="cancel-booking-container">
+    <h1>Cancel Your Booking</h1>
+    
+    <div class="booking-info">
+        <h2>Booking Details</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="label">Booking ID:</span>
+                <span class="value">#{{ booking.id }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Guest Name:</span>
+                <span class="value">{{ booking.guest_name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Room:</span>
+                <span class="value">{{ booking.room.room_number }} ({{ booking.room.get_room_type_display }})</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Check-in:</span>
+                <span class="value">{{ booking.check_in_date|date:"M d, Y" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Check-out:</span>
+                <span class="value">{{ booking.check_out_date|date:"M d, Y" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Total Amount:</span>
+                <span class="value">${{ booking.total_amount }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Status:</span>
+                <span class="value status-badge status-{{ booking.status }}">{{ booking.status|title }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Payment Status:</span>
+                <span class="value status-badge status-{{ booking.is_paid|yesno:'paid,unpaid' }}">
+                    {{ booking.is_paid|yesno:'Paid,Unpaid' }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cancellation-policy">
+        <h2>Cancellation Policy</h2>
+        <ul>
+            <li>Cancellations made more than 7 days before check-in date are eligible for a full refund.</li>
+            <li>Cancellations made between 3-7 days before check-in are eligible for a 50% refund.</li>
+            <li>Cancellations made less than 3 days before check-in are not eligible for a refund.</li>
+            <li>If you've already checked in, no refund will be provided for early check-out.</li>
+        </ul>
+    </div>
+
+    <div class="confirmation-box">
+        <h2>Are you sure you want to cancel this booking?</h2>
+        <p>This action cannot be undone. Please review our cancellation policy above before proceeding.</p>
+        
+        <form method="post" class="cancel-form">
+            {% csrf_token %}
+            <div class="button-group">
+                <a href="{% url 'booking_details' booking.id %}" class="btn btn-secondary">Back to Booking</a>
+                <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.cancel-booking-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.booking-info {
+    margin-bottom: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.value {
+    font-weight: 500;
+    color: #333;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-confirmed {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-cancelled {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-paid {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-unpaid {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.cancellation-policy {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.cancellation-policy h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.cancellation-policy ul {
+    padding-left: 1.5rem;
+}
+
+.cancellation-policy li {
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.confirmation-box {
+    background: #fff3f3;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #ffcdd2;
+}
+
+.confirmation-box h2 {
+    color: #d32f2f;
+    margin-bottom: 1rem;
+}
+
+.confirmation-box p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+</style>
+{% endblock %}

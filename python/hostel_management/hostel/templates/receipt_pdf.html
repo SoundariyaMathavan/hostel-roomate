@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Receipt - {{ pnr }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .pnr {
+            background: #f8f9fa;
+            padding: 10px;
+            display: inline-block;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .status.paid {
+            color: #155724;
+        }
+        .status.pending {
+            color: #856404;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .details {
+            margin-left: 20px;
+        }
+        .row {
+            margin: 5px 0;
+        }
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .total {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px solid #333;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Dorm Stay</div>
+        <div class="pnr">PNR: {{ pnr }}</div>
+        <div class="status {% if booking.is_paid %}paid{% else %}pending{% endif %}">
+            {% if booking.is_paid %}Payment Completed{% else %}Payment Pending{% endif %}
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Room Information</div>
+        <div class="details">
+            <div class="row"><strong>Room Type:</strong> {{ booking.room.get_room_type_display }}</div>
+            <div class="row"><strong>Room Number:</strong> {{ booking.room.room_number }}</div>
+            <div class="row"><strong>Capacity:</strong> {{ booking.room.capacity }} Person</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Booking Information</div>
+        <div class="details">
+            <div class="row"><strong>Check-in:</strong> {{ booking.check_in_date|date:"F d, Y" }}</div>
+            <div class="row"><strong>Check-out:</strong> {{ booking.check_out_date|date:"F d, Y" }}</div>
+            <div class="row"><strong>Duration:</strong> {{ booking.bookingpreference.duration_value }} {{ booking.bookingpreference.duration_type }}</div>
+            <div class="row"><strong>Meal Plan:</strong> {{ booking.bookingpreference.get_meal_plan_display }}</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Guest Information</div>
+        <div class="details">
+            <div class="row"><strong>Name:</strong> {{ booking.user.get_full_name|default:booking.user.username }}</div>
+            <div class="row"><strong>Email:</strong> {{ booking.user.email }}</div>
+            <div class="row"><strong>Booking Date:</strong> {{ booking.booking_date|date:"F d, Y" }}</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Cost Breakdown</div>
+        <div class="details">
+            <div class="cost-item">
+                <span>Room Charges (Base)</span>
+                <span>Rs.{{ booking.room.price }} per month</span>
+            </div>
+
+            {% with pref=booking.bookingpreference %}
+                {% if pref.meal_plan != 'none' %}
+                <div class="cost-item">
+                    <span>Meal Plan ({{ pref.get_meal_plan_display }})</span>
+                    <span>
+                        {% if pref.meal_plan == 'breakfast' %}Rs.100
+                        {% elif pref.meal_plan == 'breakfast_dinner' %}Rs.200
+                        {% elif pref.meal_plan == 'all_meals' %}Rs.300
+                        {% endif %} per month
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if pref.needs_parking %}
+                <div class="cost-item">
+                    <span>Parking Space</span>
+                    <span>$50 per month</span>
+                </div>
+                {% endif %}
+
+                {% if pref.needs_laundry %}
+                <div class="cost-item">
+                    <span>Laundry Service</span>
+                    <span>$30 per month</span>
+                </div>
+                {% endif %}
+
+                {% if pref.needs_cleaning %}
+                <div class="cost-item">
+                    <span>Room Cleaning Service</span>
+                    <span>$40 per month</span>
+                </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="total">
+                <span>Total Amount: ${{ payment.amount }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Thank you for choosing Dorm Stay!</p>
+        <p>Receipt generated on: {{ generated_date }}</p>
+        <p>For any queries, please contact our support team.</p>
+    </div>
+</body>
+</html>

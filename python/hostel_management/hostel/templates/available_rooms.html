@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Available Rooms - Dorm Stay{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Available Rooms</h1>
+    
+    <div class="row g-4">
+        {% for room in rooms %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card room-card h-100">
+                <div class="price-tag">${{ room.price }}/night</div>
+                {% if room.image %}
+                <img src="{{ room.image.url }}" class="card-img-top" alt="{{ room.room_type }} Room">
+                {% else %}
+                <img src="{% static 'images/room1.png' %}" class="card-img-top" alt="{{ room.room_type }} Room">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ room.room_type }} Room</h5>
+                    <p class="card-text">{{ room.description }}</p>
+                    <div class="room-features mb-3">
+                        {% if room.has_wifi %}
+                        <span class="badge bg-light text-dark me-1"><i class="fas fa-wifi me-1"></i> Wi-Fi</span>
+                        {% endif %}
+                        {% if room.has_ac %}
+                        <span class="badge bg-light text-dark me-1"><i class="fas fa-snowflake me-1"></i> AC</span>
+                        {% endif %}
+                        {% if room.has_tv %}
+                        <span class="badge bg-light text-dark me-1"><i class="fas fa-tv me-1"></i> TV</span>
+                        {% endif %}
+                        {% if room.has_attached_bathroom %}
+                        <span class="badge bg-light text-dark me-1"><i class="fas fa-bath me-1"></i> Private Bath</span>
+                        {% endif %}
+                        {% if room.has_balcony %}
+                        <span class="badge bg-light text-dark me-1"><i class="fas fa-door-open me-1"></i> Balcony</span>
+                        {% endif %}
+                        {% if room.has_fridge %}
+                        <span class="badge bg-light text-dark me-1"><i class="fas fa-cube me-1"></i> Fridge</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-grid">
+                        <a href="{% url 'book_room' room_id=room.id %}" class="btn btn-primary">Book Now</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Room #{{ room.room_number }} | Floor {{ room.floor }} | Capacity: {{ room.capacity }}</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i> No rooms are currently available. Please check back later.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

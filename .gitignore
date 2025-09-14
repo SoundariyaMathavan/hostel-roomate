@@ -1,0 +1,12 @@
+﻿# ========== Python ==========
+*.py[cod]
+__pycache__/
+
+# ========== DB & media ==========
+*.sqlite3
+*.mp4
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif

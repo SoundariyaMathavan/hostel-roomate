@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirm Cancel Booking - Dorm Stay{% endblock %}
+
+{% block extra_styles %}
+.confirm-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.booking-details {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--light-color);
+    border-radius: 4px;
+}
+
+.booking-details h3 {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.booking-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    text-align: left;
+}
+
+.booking-info p {
+    margin: 0.5rem 0;
+    color: var(--text-muted);
+}
+
+.booking-info strong {
+    color: var(--text-color);
+}
+
+.warning-text {
+    color: var(--error-color);
+    margin: 2rem 0;
+    font-weight: 600;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.btn-cancel-booking {
+    background: var(--error-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-cancel-booking:hover {
+    background-color: #c0392b;
+}
+
+.btn-back {
+    background: transparent;
+    color: var(--text-muted);
+    padding: 0.75rem 1.5rem;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-back:hover {
+    background-color: var(--light-color);
+    color: var(--text-color);
+}
+{% endblock %}
+
+{% block content %}
+<div class="confirm-container">
+    <h1>Cancel Booking</h1>
+    
+    <div class="booking-details">
+        <h3>Booking Details</h3>
+        <div class="booking-info">
+            <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+            <p><strong>Room Number:</strong> {{ booking.room.room_number }}</p>
+            <p><strong>Guest Name:</strong> {{ booking.user.get_full_name }}</p>
+            <p><strong>Check-in Date:</strong> {{ booking.check_in_date|date:"M d, Y" }}</p>
+            <p><strong>Check-out Date:</strong> {{ booking.check_out_date|date:"M d, Y" }}</p>
+            <p><strong>Total Amount:</strong> ${{ booking.total_amount }}</p>
+        </div>
+    </div>
+    
+    <p class="warning-text">Are you sure you want to cancel this booking? This action cannot be undone.</p>
+    
+    <div class="action-buttons">
+        <a href="{% url 'admin_dashboard' %}" class="btn-back">Back</a>
+        <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn-cancel-booking">Cancel Booking</button>
+        </form>
+    </div>
+</div>
+{% endblock %} 

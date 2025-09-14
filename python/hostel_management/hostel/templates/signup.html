@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - Dorm Stay{% endblock %}
+
+{% block extra_styles %}
+<style>
+/* Professional Signup Form Styles */
+:root {
+    --card-border-radius: 8px;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --card-bg: #ffffff;
+    --border-color: #e9ecef;
+    --form-border: #dee2e6;
+    --form-focus: #80bdff;
+    --form-focus-shadow: rgba(0, 123, 255, 0.25);
+}
+
+.auth-container {
+    max-width: 480px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.auth-card {
+    background: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.auth-header {
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.auth-header h2 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+.auth-header p {
+    color: #6c757d;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.auth-body {
+    padding: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--form-border);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: #495057;
+    background-color: #fff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-group input:focus {
+    border-color: var(--form-focus);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem var(--form-focus-shadow);
+}
+
+.form-group i {
+    position: absolute;
+    left: 1rem;
+    top: calc(50% + 12px);
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.auth-btn:hover {
+    background-color: #001f3f;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.auth-footer p {
+    color: #6c757d;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+.auth-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1.5rem auto;
+        max-width: 90%;
+    }
+
+    .auth-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .auth-header p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        margin: 1rem auto;
+        padding: 0 0.5rem;
+    }
+
+    .auth-header, .auth-body {
+        padding: 1.25rem;
+    }
+
+    .form-group input {
+        padding: 0.65rem 1rem 0.65rem 2.5rem;
+    }
+
+    .auth-btn {
+        padding: 0.65rem;
+    }
+}
+.chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999; /* High enough to stay above other content */
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+
+.chatbot-box {
+    position: fixed;
+    bottom: 90px;
+    right: 25px;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.chatbot-header {
+    background-color: #00274d;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none; /* or block when active */
+    overflow: hidden;
+}
+
+
+.chatbot-body {
+    padding: 10px;
+    height: 250px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    font-size: 14px;
+}
+
+.chatbot-body p {
+    margin: 8px 0;
+}
+
+.bot-message {
+    background: #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.user-message {
+    background: #cfe2ff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-end;
+}
+
+.chatbot-footer {
+    padding: 10px;
+    display: flex;
+    gap: 5px;
+    border-top: 1px solid #ccc;
+}
+
+.chatbot-footer input {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.chatbot-footer button {
+    background-color: #00274d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Create an Account</h1>
+    <p>Join Dorm Stay today</p>
+</div>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header" style="background-color: var(--primary-color); color: white;">
+            <h2 style="color: white;">Sign Up</h2>
+            <p style="color: rgba(255, 255, 255, 0.9);">Create your account to get started</p>
+        </div>
+
+        <div class="auth-body">
+            <form method="post" action="{% url 'signup' %}" id="signupForm" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="Choose a username">
+                    <i class="fas fa-user"></i>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                    <i class="fas fa-envelope"></i>
+                </div>
+
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" required placeholder="Enter your first name">
+                    <i class="fas fa-user"></i>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Create a password">
+                    <i class="fas fa-lock"></i>
+                </div>
+
+                <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Room - Dorm Stay{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .edit-room-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark-color);
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .edit-room-container {
+            margin: 1rem auto;
+            padding: 1.5rem;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-room-container">
+    <h1>Edit Room</h1>
+    
+    <form method="post" action="{% url 'edit_room' room.id %}">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                <label for="room_number">Room Number</label>
+                <input type="text" id="room_number" name="room_number" value="{{ room.room_number }}" required>
+            </div>
+            <div class="form-group">
+                <label for="room_type">Room Type</label>
+                <select id="room_type" name="room_type" required>
+                    <option value="standard" {% if room.room_type == 'standard' %}selected{% endif %}>Standard Room</option>
+                    <option value="deluxe" {% if room.room_type == 'deluxe' %}selected{% endif %}>Deluxe Room</option>
+                    <option value="luxury" {% if room.room_type == 'luxury' %}selected{% endif %}>Luxury Suite</option>
+                    <option value="premium" {% if room.room_type == 'premium' %}selected{% endif %}>Premium Suite</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="capacity">Capacity</label>
+                <input type="number" id="capacity" name="capacity" min="1" value="{{ room.capacity }}" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price per Night ($)</label>
+                <input type="number" id="price" name="price" min="0" step="0.01" value="{{ room.price }}" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="floor">Floor</label>
+                <input type="number" id="floor" name="floor" min="1" value="{{ room.floor }}" required>
+            </div>
+            <div class="form-group">
+                <label for="is_available">Availability</label>
+                <select id="is_available" name="is_available">
+                    <option value="True" {% if room.is_available %}selected{% endif %}>Available</option>
+                    <option value="False" {% if not room.is_available %}selected{% endif %}>Not Available</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="amenities">Amenities (comma-separated)</label>
+            <input type="text" id="amenities" name="amenities" value="{{ room.amenities }}" placeholder="WiFi, AC, TV">
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="3">{{ room.description }}</textarea>
+        </div>
+        <div class="form-actions">
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

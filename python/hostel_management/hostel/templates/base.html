@@ -1,0 +1,432 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Dorm Stay{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Dorm Stay - Your home away from home. Find comfortable accommodations for students and travelers.">
+    <meta name="theme-color" content="#00274d">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    {% block extra_styles %}
+<style>
+    /* Chatbot Styles */
+ 
+/* Make chatbot toggle button fixed to bottom-right of the screen */
+.chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999; /* High enough to stay above other content */
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+
+.chatbot-box {
+    position: fixed;
+    bottom: 90px;
+    right: 25px;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.chatbot-header {
+    background-color: #00274d;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none; /* or block when active */
+    overflow: hidden;
+}
+
+
+.chatbot-body {
+    padding: 10px;
+    height: 250px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    font-size: 14px;
+}
+
+.chatbot-body p {
+    margin: 8px 0;
+}
+
+.bot-message {
+    background: #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.user-message {
+    background: #cfe2ff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-end;
+}
+
+.chatbot-footer {
+    padding: 10px;
+    display: flex;
+    gap: 5px;
+    border-top: 1px solid #ccc;
+}
+
+.chatbot-footer input {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.chatbot-footer button {
+    background-color: #00274d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+.menu {
+    display: none;
+}
+
+.menu.active {
+    display: block;
+}
+
+</style>    
+        
+      
+    {% endblock %}
+</head>
+<body>
+
+    {% if user.is_authenticated and unread_notifications_count > 0 %}
+    <!-- Notification Bar -->
+    <div class="notification-bar">
+        <div class="notification-message">
+            <i class="fas fa-bell"></i> You have {{ unread_notifications_count }} new notification{{ unread_notifications_count|pluralize }}
+        </div>
+        <div class="notification-actions">
+            <a href="{% url 'notifications' %}" class="notification-view">View</a>
+            <a href="{% url 'mark_all_read' %}" class="notification-dismiss">Dismiss</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{% url 'home' %}">Dorm Stay</a>
+        </div>
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="menu" id="mobileMenu">
+            <a href="{% url 'home' %}" class="menu-item">Home</a>
+            <a href="{% url 'about' %}" class="menu-item">About</a>
+            <a href="{% url 'amenities' %}" class="menu-item">Amenities</a>
+            <a href="{% url 'contact' %}" class="menu-item">Contact</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="menu-item">Dashboard</a>
+                <a href="{% url 'profile' %}" class="menu-item">Profile</a>
+                <a href="{% url 'roommate_finder' %}" class="menu-item">Roommate Finder</a>
+                <a href="{% url 'available_rooms' %}" class="menu-item">Book Room</a>
+                <a href="{% url 'notifications' %}" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                </a>
+                <a href="{% url 'logout' %}" class="menu-item">Logout</a>
+            {% else %}
+                <a href="{% url 'signup' %}" class="menu-item">Sign Up</a>
+                <a href="{% url 'login' %}" class="menu-item">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% if messages %}
+    <!-- Flash Messages -->
+    <div class="floating-alert-container">
+        {% for message in messages %}
+        <div class="alert {% if 'logged out' in message|lower %}alert-success{% elif message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} auto-dismiss">
+            <div class="alert-content">
+                <i class="alert-icon fas {% if 'logged out' in message|lower or message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                <div class="alert-message">{{ message }}</div>
+            </div>
+            <button class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="{% block main_container_class %}container{% endblock %}">
+        {% block content %}{% endblock %}
+    </main>
+  
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" aria-label="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+   
+
+    {# --- CHATBOT BUTTON and WINDOW --- #}
+
+   
+    <!-- Chatbot Toggle Button -->
+<button id="chatbotButton" class="chatbot-toggle" aria-label="Open Chatbot">
+    <i class="fas fa-robot"></i>
+</button>
+
+<!-- Chatbot Widget -->
+<div id="chatbotBox" class="chatbot-box" style="display: none;">
+    <div class="chatbot-header">
+        <span>Chatbot Assistant</span>
+        <button id="closeChatbot" class="chatbot-close" aria-label="Close Chatbot">&times;</button>
+    </div>
+    <div class="chatbot-body" id="chatBody">
+        <p class="bot-message">Hi there! How can I help you today?</p>
+    </div>
+    <div class="chatbot-footer">
+        <input type="text" id="chatInput" placeholder="Type your message..." />
+        <button id="sendMessage" aria-label="Send Message"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+     <!-- Chatbot Section -->
+
+
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-main">
+            <div class="container py-5">
+                <div class="row gy-4 gx-5">
+                    <!-- About Section -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-about-section">
+                            <h4 class="footer-heading">About Us</h4>
+                            <p class="footer-about">
+                                Providing comfortable and affordable accommodations for students and travelers since 2020.
+                            </p>
+                            <div class="footer-social mt-4">
+                                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-links-section">
+                            <h4 class="footer-heading">Quick Links</h4>
+                            <ul class="footer-links list-unstyled">
+                                <li><a href="{% url 'home' %}"><i class="fas fa-angle-right"></i> Home</a></li>
+                                <li><a href="{% url 'about' %}"><i class="fas fa-angle-right"></i> About Us</a></li>
+                                <li><a href="{% url 'amenities' %}"><i class="fas fa-angle-right"></i> Amenities</a></li>
+                                <li><a href="{% url 'contact' %}"><i class="fas fa-angle-right"></i> Contact Us</a></li>
+                                {% if user.is_authenticated %}
+                                    <li><a href="{% url 'dashboard' %}"><i class="fas fa-angle-right"></i> Dashboard</a></li>
+                                    <li><a href="{% url 'profile' %}"><i class="fas fa-angle-right"></i> My Profile</a></li>
+                                    <li><a href="{% url 'available_rooms' %}"><i class="fas fa-angle-right"></i> Book Room</a></li>
+                                    <li><a href="{% url 'dashboard' %}"><i class="fas fa-angle-right"></i> My Bookings</a></li>
+                                    <li><a href="{% url 'logout' %}"><i class="fas fa-angle-right"></i> Logout</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'login' %}"><i class="fas fa-angle-right"></i> Login</a></li>
+                                    <li><a href="{% url 'signup' %}"><i class="fas fa-angle-right"></i> Sign Up</a></li>
+                                    <li><a href="{% url 'available_rooms' %}"><i class="fas fa-angle-right"></i> Available Rooms</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-contact-section">
+                            <h4 class="footer-heading">Contact Us</h4>
+                            <ul class="footer-contact list-unstyled">
+                                <li>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <div>123 University Avenue<br>Campus City, State 12345</div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-phone-alt"></i>
+                                    <div>+1 (234) 567-8900<br>+1 (234) 567-8901</div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-envelope"></i>
+                                    <div>info@dormstay.com<br>support@dormstay.com</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Form -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-form-section">
+                            <h4 class="footer-heading">Send Feedback</h4>
+                            <form id="quickFeedbackForm" class="footer-form">
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" placeholder="Your Name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="email" class="form-control" placeholder="Your Email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <textarea class="form-control" rows="3" placeholder="Your Message" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row py-3 align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2025 Dorm Stay. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#cookiesModal">Cookies</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals Placeholders -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+      <div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">Terms content goes here.</div></div></div>
+    </div>
+
+    <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+      <div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">Privacy policy content goes here.</div></div></div>
+    </div>
+
+    <div class="modal fade" id="cookiesModal" tabindex="-1" aria-labelledby="cookiesModalLabel" aria-hidden="true">
+      <div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="cookiesModalLabel">Cookies Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">Cookies policy content goes here.</div></div></div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    
+       
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const chatbotButton = document.getElementById("chatbotButton");
+            const chatbotBox = document.getElementById("chatbotBox");
+            const closeChatbot = document.getElementById("closeChatbot");
+            const sendMessageButton = document.getElementById("sendMessage");
+            const chatInput = document.getElementById("chatInput");
+            const chatBody = document.getElementById("chatBody");
+        
+            chatbotButton.addEventListener("click", function () {
+                chatbotBox.style.display = chatbotBox.style.display === "none" || chatbotBox.style.display === "" ? "flex" : "none";
+            });
+        
+            closeChatbot.addEventListener("click", function () {
+                chatbotBox.style.display = "none";
+            });
+        
+            sendMessageButton.addEventListener("click", function () {
+                const message = chatInput.value.trim();
+                if (message) {
+                    const userMsg = document.createElement("p");
+                    userMsg.className = "user-message";
+                    userMsg.textContent = "You: " + message;
+                    chatBody.appendChild(userMsg);
+                    chatInput.value = "";
+                    chatBody.scrollTop = chatBody.scrollHeight;
+        
+                    setTimeout(() => {
+                        const botMsg = document.createElement("p");
+                        botMsg.className = "bot-message";
+                        botMsg.textContent = "Bot: Thank you! We'll get back to you shortly.";
+                        chatBody.appendChild(botMsg);
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                    }, 1000);
+                }
+            });
+        
+            // Optional: Send message on Enter key
+            chatInput.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    sendMessageButton.click();
+                }
+            });
+        });
+         document.addEventListener("DOMContentLoaded", function () {
+        const menuToggle = document.getElementById("menuToggle");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        menuToggle.addEventListener("click", function () {
+            mobileMenu.classList.toggle("active");
+        });
+    });
+        </script>
+        
+      
+      
+   
+</body>
+</html>

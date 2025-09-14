@@ -1,0 +1,809 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Dashboard - Dorm Stay{% endblock %}
+
+{% block extra_styles %}
+<style>
+/* Professional Dashboard Styles */
+:root {
+    --card-border-radius: 12px;
+    --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    --card-bg: #ffffff;
+    --success-color: #28a745;
+    --warning-color: #ffc107; 
+    --danger-color: #dc3545;
+    --info-color: #0d6efd;
+    --border-color: #e9ecef;
+    --light-bg: #f8f9fa;
+    --hover-transition: all 0.3s ease;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--card-border-radius);
+    margin-bottom: 2rem;
+    box-shadow: var(--card-shadow);
+}
+
+.dashboard-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.dashboard-header p {
+    font-size: 1rem;
+    opacity: 0.9;
+    max-width: 600px;
+    line-height: 1.5;
+}
+
+/* Stats Section */
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    transition: var(--hover-transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.05) 0%, rgba(255, 255, 255, 0) 60%);
+    z-index: 0;
+}
+
+.stat-card-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    color: rgba(0, 39, 77, 0.05);
+    z-index: 0;
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    background-color: var(--light-bg);
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1);
+}
+
+.stat-confirmed {
+    color: var(--success-color);
+}
+
+.stat-pending {
+    color: var(--warning-color);
+}
+
+.stat-cancelled {
+    color: var(--danger-color);
+}
+
+.stat-total {
+    color: var(--info-color);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+    color: var(--primary-color);
+    position: relative;
+    z-index: 1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 1rem;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+}
+
+/* Quick Actions */
+.quick-action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    border: 1px solid var(--border-color);
+    height: 100%;
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: var(--hover-transition);
+}
+
+.quick-action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.quick-action-card i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.quick-action-card:hover i {
+    transform: scale(1.1);
+}
+
+.quick-action-card span {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Booking Cards */
+.booking-card {
+    background: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-shadow);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: var(--hover-transition);
+    position: relative;
+}
+
+.booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.booking-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--accent-color);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.booking-card:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.booking-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background-color: var(--light-bg);
+}
+
+.booking-header h2 {
+    font-size: 1.25rem;
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.booking-details {
+    padding: 1.5rem;
+}
+
+.booking-status {
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1;
+}
+
+.status-confirmed {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.status-pending {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: var(--warning-color);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.status-cancelled {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--danger-color);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+.booking-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.booking-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 1rem;
+    background-color: var(--light-bg);
+    border-radius: var(--card-border-radius);
+    border-left: 3px solid var(--border-color);
+}
+
+.booking-info i {
+    color: var(--primary-color);
+    width: 20px;
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+    text-align: center;
+}
+
+.booking-info strong {
+    color: var(--primary-color);
+    margin-right: 0.3rem;
+    font-weight: 600;
+}
+
+.booking-actions {
+    padding: 1.25rem 1.5rem;
+    background-color: var(--light-bg);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    line-height: 1;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+/* Empty State */
+.no-bookings {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-shadow);
+    margin-top: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.no-bookings i {
+    font-size: 3.5rem;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.no-bookings h3 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.no-bookings p {
+    color: #6c757d;
+    max-width: 500px;
+    margin: 0 auto 1.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.no-bookings .btn {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Badge Styles */
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    background-color: #f1f5f9;
+    color: #495057;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .dashboard-header {
+        padding: 1.5rem;
+    }
+
+    .stat-card {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-header p {
+        font-size: 0.9rem;
+    }
+
+    .booking-header {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .booking-details {
+        padding: 1rem;
+    }
+
+    .booking-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-actions {
+        justify-content: flex-start;
+        padding: 1rem;
+        gap: 0.5rem;
+    }
+
+    .btn {
+        min-width: 110px;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .booking-info {
+        padding: 0.75rem;
+    }
+}.chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999; /* High enough to stay above other content */
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+
+.chatbot-box {
+    position: fixed;
+    bottom: 90px;
+    right: 25px;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.chatbot-header {
+    background-color: #00274d;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none; /* or block when active */
+    overflow: hidden;
+}
+
+
+.chatbot-body {
+    padding: 10px;
+    height: 250px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    font-size: 14px;
+}
+
+.chatbot-body p {
+    margin: 8px 0;
+}
+
+.bot-message {
+    background: #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.user-message {
+    background: #cfe2ff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-end;
+}
+
+.chatbot-footer {
+    padding: 10px;
+    display: flex;
+    gap: 5px;
+    border-top: 1px solid #ccc;
+}
+
+.chatbot-footer input {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.chatbot-footer button {
+    background-color: #00274d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1>Welcome, {{ user.first_name|default:user.username }}!</h1>
+                <p>Manage your room bookings, track payments, and explore our premium hostel services all in one place.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="{% url 'available_rooms' %}" class="btn btn-light">
+                    <i class="fas fa-plus-circle me-2"></i> Book New Room
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if bookings %}
+    <!-- Dashboard Stats -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-icon stat-total">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="stat-value">{{ bookings.count }}</div>
+            <div class="stat-label">Total Bookings</div>
+            <div class="stat-card-icon">
+                <i class="fas fa-home"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon stat-confirmed">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-value">{{ confirmed_count }}</div>
+            <div class="stat-label">Confirmed</div>
+            <div class="stat-card-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon stat-pending">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-value">{{ pending_count }}</div>
+            <div class="stat-label">Pending</div>
+            <div class="stat-card-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon stat-total">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-value">
+                {% if next_booking %}
+                    {{ next_booking.check_in_date|timeuntil }}
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+            <div class="stat-label">Until Next Stay</div>
+            <div class="stat-card-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions mb-4">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="row g-3">
+            <div class="col-md-3 col-sm-6">
+                <a href="{% url 'profile' %}" class="quick-action-card">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Edit Profile</span>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="{% url 'roommate_finder' %}" class="quick-action-card">
+                    <i class="fas fa-users"></i>
+                    <span>Find Roommate</span>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#" class="quick-action-card">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>View Invoices</span>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#" class="quick-action-card">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Your Bookings</h2>
+
+    <!-- Booking Cards -->
+    {% for booking in bookings %}
+    <div class="booking-card">
+        <div class="booking-header">
+            <h2>{{ booking.room.get_room_type_display }} - Room {{ booking.room.room_number }}</h2>
+            <span class="booking-status {% if booking.is_paid %}status-confirmed{% else %}status-pending{% endif %}">
+                {% if booking.is_paid %}
+                    <i class="fas fa-check-circle"></i> Confirmed
+                {% else %}
+                    <i class="fas fa-clock"></i> Pending Payment
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="booking-details">
+            <div class="booking-grid">
+                <div class="booking-info">
+                    <i class="fas fa-calendar-check"></i>
+                    <div>
+                        <strong>Check-in</strong>
+                        <div>{{ booking.check_in_date|date:"F d, Y" }}</div>
+                    </div>
+                </div>
+                <div class="booking-info">
+                    <i class="fas fa-calendar-times"></i>
+                    <div>
+                        <strong>Check-out</strong>
+                        <div>{{ booking.check_out_date|date:"F d, Y" }}</div>
+                    </div>
+                </div>
+                <div class="booking-info">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <strong>Duration</strong>
+                        <div>{{ booking.bookingpreference.duration_value }} {{ booking.bookingpreference.get_duration_type_display }}</div>
+                    </div>
+                </div>
+                <div class="booking-info">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div>
+                        <strong>Total Amount</strong>
+                        <div>${{ booking.total_amount }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if booking.bookingpreference.needs_parking or booking.bookingpreference.needs_laundry or booking.bookingpreference.needs_cleaning %}
+            <div class="booking-info">
+                <i class="fas fa-plus-circle"></i>
+                <div>
+                    <strong>Additional Services</strong>
+                    <div>
+                        {% if booking.bookingpreference.needs_parking %}<span class="badge">Parking</span>{% endif %}
+                        {% if booking.bookingpreference.needs_laundry %}<span class="badge">Laundry</span>{% endif %}
+                        {% if booking.bookingpreference.needs_cleaning %}<span class="badge">Cleaning</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if booking.bookingpreference.meal_plan != 'none' %}
+            <div class="booking-info">
+                <i class="fas fa-utensils"></i>
+                <div>
+                    <strong>Meal Plan</strong>
+                    <div>{{ booking.bookingpreference.get_meal_plan_display }}</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="booking-actions">
+            {% if not booking.is_paid %}
+                {% with payment=booking.payment_set.first %}
+                    {% if payment %}
+                        <a href="{% url 'payment' payment.id %}" class="btn btn-primary">
+                            Complete Payment
+                        </a>
+                    {% else %}
+                        <a href="{% url 'checkout' booking.id %}" class="btn btn-primary">
+                            Setup Payment
+                        </a>
+                    {% endif %}
+                {% endwith %}
+            {% else %}
+                <a href="{% url 'download_receipt' booking.id %}" class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i> Download Receipt
+                </a>
+            {% endif %}
+            <a href="{% url 'booking_details' booking.id %}" class="btn btn-secondary">
+                View Details
+            </a>
+            {% if booking.status != 'cancelled' %}
+            <a href="{% url 'user_cancel_booking' booking.id %}" class="btn btn-danger">
+                <i class="fas fa-times-circle me-2"></i> Cancel
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <!-- No Bookings State -->
+    <div class="no-bookings">
+        <i class="fas fa-home"></i>
+        <h3>No Bookings Yet</h3>
+        <p>You haven't made any room bookings yet. Start by exploring our available rooms.</p>
+        <a href="{% url 'available_rooms' %}" class="btn btn-primary">
+            Browse Rooms
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Booking Details - Dorm Stay{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/booking_details.css' %}">
+<style>
+    .chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999; /* High enough to stay above other content */
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+
+.chatbot-box {
+    position: fixed;
+    bottom: 90px;
+    right: 25px;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.chatbot-header {
+    background-color: #00274d;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none; /* or block when active */
+    overflow: hidden;
+}
+
+
+.chatbot-body {
+    padding: 10px;
+    height: 250px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    font-size: 14px;
+}
+
+.chatbot-body p {
+    margin: 8px 0;
+}
+
+.bot-message {
+    background: #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.user-message {
+    background: #cfe2ff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-end;
+}
+
+.chatbot-footer {
+    padding: 10px;
+    display: flex;
+    gap: 5px;
+    border-top: 1px solid #ccc;
+}
+
+.chatbot-footer input {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.chatbot-footer button {
+    background-color: #00274d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="{% url 'home' %}">Home</a> &gt;
+        <a href="{% url 'dashboard' %}">Dashboard</a> &gt;
+        <span>Booking Details</span>
+    </nav>
+
+    <div class="booking-details-card">
+        <div class="booking-header">
+            <h2>Booking Details</h2>
+            <p>Review your booking information and status</p>
+            <div class="booking-meta">
+                <span class="booking-status badge badge-warning">Payment Pending</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-section">
+                    <h3><i class="fas fa-door-open"></i> Room Information</h3>
+                    <ul class="detail-list">
+                        <li><strong>Room Type:</strong> {{ booking.room.get_room_type_display }}</li>
+                        <li><strong>Room Number:</strong> {{ booking.room.room_number }}</li>
+                        <li><strong>Capacity:</strong> {{ booking.room.capacity }} Person(s)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-section">
+                    <h3><i class="fas fa-calendar-alt"></i> Booking Information</h3>
+                    <ul class="detail-list">
+                        <li><strong>Check-in:</strong> {{ booking.check_in_date|date:"F d, Y" }}</li>
+                        <li><strong>Check-out:</strong> {{ booking.check_out_date|date:"F d, Y" }}</li>
+                        <li><strong>Duration:</strong> {{ booking.check_out_date|timeuntil:booking.check_in_date }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="cost-section">
+            <h3><i class="fas fa-receipt"></i> Cost Breakdown</h3>
+            <table class="cost-table">
+                <tr>
+                    <td>Room Cost:</td>
+                    <td>Rs.{{ booking.total_amount }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>Total Cost:</strong></td>
+                    <td><strong>Rs.{{ booking.total_amount }}</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="action-buttons">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Pay Now</button>
+            </form>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
